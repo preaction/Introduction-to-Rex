@@ -251,6 +251,12 @@ task 'cpan', sub {
 };
 ```
 
+---
+
+```
+$ rex -g ops_dev cpan --module='Mojolicious Dancer'
+```
+
 ------
 
 # Rex can do more
