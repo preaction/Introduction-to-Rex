@@ -281,3 +281,7 @@ $ rex -g ops_dev cpan --module='Mojolicious Dancer'
 ------
 
 # It's over!
+
+* [Github](http://github.com/preaction/Introduction-to-Rex)
+* [Rex](http://rexify.org)
+
