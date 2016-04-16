@@ -1,4 +1,13 @@
+
 # Introduction to Rex
+
+A short introduction to Rex, a Perl server automation tool, and
+a gallery of Rex's features.
+
+by Doug Bell (preaction)
+
+<http://preaction.github.io/Introduction-to-Rex/>
+Source: <https://github.com/preaction/Introduction-to-Rex>
 
 ------
 
@@ -35,6 +44,10 @@ Filesystem             Size   Used  Avail Use% Mounted on
 ------
 
 # Rex runs tasks on hosts
+
+---
+
+# `rex -H <host> <task>`
 
 ---
 
@@ -77,6 +90,10 @@ group ops_dev => 'scsqhdadap0[1..2]';
 ------
 
 # Rex runs tasks on host groups
+
+---
+
+# `rex -g <group> <task>`
 
 ---
 
@@ -134,6 +151,10 @@ environment ops_prd => sub {
 ------
 
 # Rex runs tasks in environments
+
+---
+
+# `rex -E <env> <task>`
 
 ---
 
@@ -198,14 +219,20 @@ environment ops_dev => sub {
 environment ops_prd => sub {
     group pc => 'scsqhdapap01';
 };
+```
 
+---
+
+```
 desc 'Restart process controller';
-task 'restart_pc' => groups => [qw( pc )], sub {
-    my $datlib = get 'datlib';
-    my $env = environment;
-    run "$datlib/pc/envs/$env/manager/bin/apache restart";
-    run "$datlib/pc/envs/$env/manager/bin/boss.pl restart";
-};
+task 'restart_pc',
+    groups => [qw( pc )],
+    sub {
+        my $datlib = get 'datlib';
+        my $env = environment;
+        run "$datlib/pc/envs/$env/manager/bin/apache restart";
+        run "$datlib/pc/envs/$env/manager/bin/boss.pl restart";
+    };
 ```
 
 ---
@@ -222,12 +249,14 @@ $ rex -E ops_dev restart_pc
 
 ```
 desc "Update the PC repository";
-task 'update_pc', group => [qw( pc )], sub {
-    my $datlib = get 'datlib';
-    run "cd $datlib/pc/versions/master && git pull";
-    die "Task failed. Stopping." if $?;
-    run_task 'restart_pc', on => connection->server;
-};
+task 'update_pc',
+    group => [qw( pc )],
+    sub {
+        my $datlib = get 'datlib';
+        run "cd $datlib/pc/versions/master && git pull";
+        die "Task failed. Stopping." if $?;
+        run_task 'restart_pc', on => connection->server;
+    };
 ```
 
 ---
@@ -261,27 +290,92 @@ $ rex -g ops_dev cpan --module='Mojolicious Dancer'
 
 # Rex can do more
 
----
+------
 
 # Rex can install files
 
 ---
 
+```
+task deploy_pc =>
+    group => [qw( pc )],
+    sub {
+        file '/etc/apache2/httpd.conf',
+            ensure => 'present',
+            source => 'etc/httpd.conf',
+            on_change => sub {
+                run_task 'restart_pc', on => connection->server;
+            };
+    };
+```
+
+------
+
 # Rex can generate files from templates
 
 ---
+
+```
+task deploy_pc =>
+    group => [qw( pc )],
+    sub {
+        my $config = template(
+            'etc/httpd.conf',
+            server => connection->server,
+        );
+
+        file '/etc/apache2/httpd.conf',
+            ensure => 'present',
+            content => $config,
+            on_change => sub {
+                run_task 'restart_pc', on => connection->server;
+            };
+    };
+```
+
+------
 
 # Rex can sync directories
 ## `rsync`
 
 ---
 
+```
+use Rex::Commands::Rsync;
+
+task sync_www =>
+    sub {
+        sync 'www', '/var/www';
+    };
+```
+
+------
+
+# Rex has more configuration
+
+## Rex::CMDB
+
+---
+
+# Configure by host
+
+---
+
+# Configure by environment
+
+---
+
+# Configure by OS
+
+------
+
 # Rex has plugins
+
+<http://modules.rexify.org>
 
 ------
 
 # It's over!
 
-* [Github](http://github.com/preaction/Introduction-to-Rex)
 * [Rex](http://rexify.org)
 
