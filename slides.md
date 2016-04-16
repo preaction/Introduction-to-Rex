@@ -1,14 +1,18 @@
 
 # Introduction to Rex
 
+<http://preaction.github.io/Introduction-to-Rex/>
+
 A short introduction to Rex, a Perl server automation tool, and
 a gallery of Rex's features.
 
-by Doug Bell (preaction)
+by Doug Bell (preaction)  
+<a href="http://twitter.com/preaction"><i class="fa fa-twitter"></i> @preaction</a>  
+<a href="http://github.com/preaction"><i class="fa fa-github"></i> preaction</a>  
+[Chicago.PM](http://chicago.pm.org)  
 
-<http://preaction.github.io/Introduction-to-Rex/>
-
-Source: <https://github.com/preaction/Introduction-to-Rex>
+Source: <https://github.com/preaction/Introduction-to-Rex>  
+License: [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/legalcode)
 
 ------
 
