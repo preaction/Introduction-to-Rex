@@ -6,10 +6,10 @@
 A short introduction to Rex, a Perl server automation tool, and
 a gallery of Rex's features.
 
-by Doug Bell ([preaction](http://preaction.me))  
-<a href="http://twitter.com/preaction"><i class="fa fa-twitter"></i> @preaction</a>  
-<a href="http://github.com/preaction"><i class="fa fa-github"></i> preaction</a>  
-[Chicago.PM](http://chicago.pm.org)  
+by [Doug Bell (preaction)](http://preaction.me)  
+<a href="http://twitter.com/preaction"><i class="fa fa-twitter"></i> @preaction</a> |
+<a href="http://github.com/preaction"><i class="fa fa-github"></i> preaction</a> |
+[Chicago.PM](http://chicago.pm.org)
 
 Source: <https://github.com/preaction/Introduction-to-Rex>  
 License: [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/legalcode)
