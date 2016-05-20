@@ -82,6 +82,63 @@ $ rex -H 'scsqhdapap[01..04]' df
 
 ------
 
+# Rex deploys files
+
+---
+
+```
+task deploy_www =>
+    sub {
+        file '/etc/apache2/httpd.conf',
+            ensure => 'present',
+            source => 'etc/httpd.conf',
+            ;
+    };
+```
+
+---
+
+# Rex runs callbacks when deploying
+
+---
+
+```
+task deploy_www =>
+    sub {
+        file '/etc/apache2/httpd.conf',
+            ensure => 'present',
+            source => 'etc/httpd.conf',
+            on_change => sub {
+                run 'apachectl restart';
+            };
+    };
+```
+
+---
+
+# Rex can generate files from templates
+
+---
+
+```
+task deploy_www =>
+    sub {
+        my $config = template(
+            'etc/httpd.conf',
+            server => connection->server,
+        );
+
+        file '/etc/apache2/httpd.conf',
+            ensure => 'present',
+            content => $config,
+            on_change => sub {
+                run 'apachectl restart';
+            };
+    };
+```
+
+------
+
 # Rexfile configures host groups
 
 ---
@@ -213,41 +270,6 @@ $ rex -E ops_dev -g pc restart_pc
 
 ------
 
-# Tasks can have default groups
-
----
-
-```
-environment ops_dev => sub {
-    group pc => 'scsqhdadap02';
-};
-environment ops_prd => sub {
-    group pc => 'scsqhdapap01';
-};
-```
-
----
-
-```
-desc 'Restart process controller';
-task 'restart_pc',
-    groups => [qw( pc )],
-    sub {
-        my $datlib = get 'datlib';
-        my $env = environment;
-        run "$datlib/pc/envs/$env/manager/bin/apache restart";
-        run "$datlib/pc/envs/$env/manager/bin/boss.pl restart";
-    };
-```
-
----
-
-```
-$ rex -E ops_dev restart_pc
-```
-
-------
-
 # Tasks can run other tasks
 
 ---
@@ -294,49 +316,6 @@ $ rex -g ops_dev cpan --module='Mojolicious Dancer'
 ------
 
 # Rex can do more
-
-------
-
-# Rex can install files
-
----
-
-```
-task deploy_pc =>
-    group => [qw( pc )],
-    sub {
-        file '/etc/apache2/httpd.conf',
-            ensure => 'present',
-            source => 'etc/httpd.conf',
-            on_change => sub {
-                run_task 'restart_pc', on => connection->server;
-            };
-    };
-```
-
-------
-
-# Rex can generate files from templates
-
----
-
-```
-task deploy_pc =>
-    group => [qw( pc )],
-    sub {
-        my $config = template(
-            'etc/httpd.conf',
-            server => connection->server,
-        );
-
-        file '/etc/apache2/httpd.conf',
-            ensure => 'present',
-            content => $config,
-            on_change => sub {
-                run_task 'restart_pc', on => connection->server;
-            };
-    };
-```
 
 ------
 
